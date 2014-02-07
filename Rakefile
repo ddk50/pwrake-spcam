@@ -560,7 +560,7 @@ FTORHFITS.each do |image|
   gimage = "g#{image}"
   file gimage => [image] do |t|
     sh "sync"
-    sh "distcorr5.sh #{t.prerequisites[0]} #{t.name}"
+    sh "distcorr5R.sh #{t.prerequisites[0]} #{t.name}"
   end
   GFTORHFITS << gimage
 end
@@ -1312,7 +1312,7 @@ MAKEMOS_LIS.each do |image|
   mes = image + ".mes"
   file mes => image do |t|
     sh "sync"
-    sh "starsel2 -nskysigma=#{MOS_nskysigma} -npix=#{MOS_npix} -aratiomin=0.4 -peakmin=#{MOS_peakmin} -peakmax=#{MOS_peakmax} -aprad=#{MOS_apphotrad} -outmes=#{t.name} #{t.prerequisites[0]} > /dev/null"
+    sh "starsel3 -nskysigma=#{MOS_nskysigma} -npix=#{MOS_npix} -aratiomin=0.4 -peakmin=#{MOS_peakmin} -peakmax=#{MOS_peakmax} -aprad=#{MOS_apphotrad} -outmes=#{t.name} #{t.prerequisites[0]} > /dev/null" 
   end
   MES_LIS << mes
 end

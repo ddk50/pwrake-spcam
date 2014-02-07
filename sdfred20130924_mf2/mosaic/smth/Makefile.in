@@ -1,0 +1,41 @@
+SHELL = /bin/sh
+
+@SET_MAKE@
+@SET_GCC@
+CFLAGS= @CFLAGS@
+LIBIMC= $(IMC)/libimc.a 
+#MOSBIN @exec_prefix@/bin
+LIBUTIL= $(MOSLIB)/oyamin2b.o 
+LIBARGS = $(MOSLIB)/getargs.o
+LIBS= $(LIBUTIL) $(LIBIMC) $(LIBARGS) @LIBS@
+
+PROGS = smth2 
+
+default : $(PROGS)
+
+smth2 : smth2a.o  $(LIBIMC) $(LIBUTIL)
+	$(CC) $(CFLAGS) -o $@ $@a.o $(LIBS)
+
+$(LIBIMC): 
+	(cd $(IMC); $(MAKE) IMC=$(IMC) MOSINC=$(MOSINC) \
+	 MOSLIB=$(MOSLIB) MOSBIN=$(MOSBIN))
+
+$(LIBUTIL): 
+	(cd ../libsrc; $(MAKE) IMC=$(IMC) MOSINC=$(MOSINC) \
+	 MOSLIB=$(MOSLIB) MOSBIN=$(MOSBIN))
+
+$(LIBARGS):
+	(cd ../getarg; $(MAKE) IMC=$(IMC) MOSINC=$(MOSINC) \
+	 MOSLIB=$(MOSLIB) MOSBIN=$(MOSBIN))
+
+clean :
+	rm -f *.o *~
+
+distclean: clean
+	rm -f $(PROGS)
+
+install : smth2 
+	cp smth2 $(MOSBIN)
+
+all : $(PROGS) clean install
+

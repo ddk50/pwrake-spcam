@@ -1,0 +1,48 @@
+SHELL = /bin/sh
+
+@SET_MAKE@
+@SET_GCC@
+CFLAGS= @CFLAGS@
+LIBIMC= $(IMC)/libimc.a 
+#MOSBIN @exec_prefix@/bin
+LIBARGS=$(MOSLIB)/getargs.o
+LIBUTIL=
+LIBS= $(LIBIMC) $(LIBUTIL) @LIBS@
+BINARIES=osmed4 osmed5b2
+
+binaries: $(BINARIES)
+
+osmed5b2 : osmed5b2.o 
+	$(CC) $(CFLAGS) -o $@ $@.o $(LIBS) $(LIBARGS)
+
+osmed4 : osmed4.o 
+	$(CC) $(CFLAGS) -o $@ $@.o $(LIBS) $(LIBARGS)
+
+osmed4.o: osmed4.c $(LIBIMC) $(LIBUTIL) $(LIBARGS)
+
+osmed5b2.o: osmed5b2.c $(LIBIMC) $(LIBUTIL) $(LIBARGS)
+
+$(LIBIMC): 
+	(cd $(IMC); $(MAKE) IMC=$(IMC) MOSINC=$(MOSINC) \
+	 MOSLIB=$(MOSLIB) MOSBIN=$(MOSBIN))
+
+$(LIBUTIL): 
+	(cd ../libsrc; $(MAKE) IMC=$(IMC) MOSINC=$(MOSINC) \
+	 MOSLIB=$(MOSLIB) MOSBIN=$(MOSBIN))
+
+$(LIBARGS):
+	(cd ../getarg; $(MAKE) IMC=$(IMC) MOSINC=$(MOSINC) \
+	 MOSLIB=$(MOSLIB) MOSBIN=$(MOSBIN))
+
+install: $(BINARIES)
+	cp $(BINARIES) $(MOSBIN)
+
+# shells to be written
+
+clean: 
+	rm -f *.o *~
+
+distclean: clean
+	rm -f $(BINARIES)
+
+all: $(BINARIES) clean install

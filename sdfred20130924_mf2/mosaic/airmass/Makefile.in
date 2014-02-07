@@ -1,0 +1,44 @@
+SHELL = /bin/sh
+
+@SET_MAKE@
+@SET_GCC@
+CFLAGS= @CFLAGS@ 
+LIBIMC= $(IMC)/libimc.a 
+LIBUTIL= $(MOSLIB)/oyamin2b.o 
+LIBARGS=$(MOSLIB)/getargs.o
+LIBS= $(LIBUTIL) $(LIBIMC) $(LIBARGS) @LIBS@
+PROGS = distcorr5 airmass2 grav2
+
+binaries: $(PROGS)
+
+distcorr5: distcorr5.o $(LIBUTIL) $(LIBIMC) $(LIBARGS) 
+	$(CC) $(CFLAGS) -o $@ $@.o -lm $(LIBS) 
+
+airmass2: airmass2.o $(LIBIMC) 
+	$(CC) $(CFLAGS) -o $@ $@.o -lm 
+
+grav2: grav2.o $(LIBIMC) 
+	$(CC) $(CFLAGS) -o $@ $@.o -lm 
+
+$(LIBIMC): 
+	(cd $(IMC); $(MAKE) IMC=$(IMC) MOSINC=$(MOSINC) \
+	 MOSLIB=$(MOSLIB) MOSBIN=$(MOSBIN))
+
+$(LIBUTIL): 
+	(cd ../libsrc; $(MAKE) IMC=$(IMC) MOSINC=$(MOSINC) \
+	 MOSLIB=$(MOSLIB) MOSBIN=$(MOSBIN))
+
+$(LIBARGS):
+	(cd ../getarg; $(MAKE) IMC=$(IMC) MOSINC=$(MOSINC) \
+	 MOSLIB=$(MOSLIB) MOSBIN=$(MOSBIN))
+
+install: $(PROGS) 
+	cp $(PROGS) $(MOSBIN)
+	cp distcorr5R.sh $(MOSBIN)
+	chmod o+x $(MOSBIN)/distcorr5R.sh
+
+distclean: clean
+	rm -f $(PROGS) $(PERLSCRIPTS)
+
+clean:
+	rm -f *.o *~

@@ -9,16 +9,15 @@
 ## Usage
 ### Compile SExtractor
 
-    $ tar xzf sextractor-2.5.0.tar.gz
-    $ cd sextractor-2.5.0
+    $ tar xzf sextractor-2.8.6.tar.gz
+    $ cd sextractor-2.8.6
     $ ./configure
     $ make
     $ cd ..
 
 ### Compile SDFRED
 
-    $ cd sdfred20100528
-    $ mkdir bin mosaic/include mosaic/lib
+    $ cd sdfred20130924_mf2
     $ ./configure
     $ make
     $ cd ..
